@@ -1,0 +1,323 @@
+Selenium WebDriver Architecture - Components
+
+1.Language Bindings:
+These are like glue code/wrapper libraries written in corresponding languages 
+to communicate with the WebDriver API.
+2.JSON Wire Protocol:
+JSON stands for JavaScript Object Notation. It is used to transfer data 
+between a server and a client on the web. It transfers information between 
+HTTP server. 
+3.Browser Drivers:
+Browser drivers will do the important job of driving the corresponding 
+browsers
+
+
+Benefits of Web Driver over Selenium IDE and RC
+
+   Architecture is simpler than Selenium RC's
+▪ Faster than Selenium RC 
+▪ Interacts with page elements in a more realistic way
+▪ API is simpler than Selenium RC's
+▪ Support the headless HtmlUnitDriver browser
+
+Limitations of Web Driver
+
+Cannot Readily Support New Browsers
+Has no built-in command that automatically generates a Test Results File
+
+Interrogation API:
+driver.getTitle()
+• Get the title of the current page
+▪ driver. getCurrentUrl()
+• Get the current URL of the browser
+▪ driver.getPageSource() 
+• Get the source code of the page
+
+▪ Scenarios where sendKeys() is used:
+Sending special characters (Enter, F5, Ctrl, Alt etc.)
+
+Syntax:
+//Sending Ctrl+A
+driver.findElement(By.xpath("//body")).sendKeys(Keys.chord(Keys.CONTROL, 
+"a"));
+
+//Sending pagedown key from keyboard 
+driver.findElement(By.id("name")).sendKeys(Keys.PAGE_DOWN); 
+
+//Sending space key 
+driver.findElement(By.id("name")).sendKeys(Keys.SPACE); 
+
+isDisplayed(): Method is used to determine whether an element is 
+currently being displayed or not.
+
+ex:boolean staus = driver.findElement(By.id("UserName")).isDisplayed();
+
+▪ isSelected(): Method is used to determine whether an element is 
+selected or not.
+
+ex:boolean status = driver.findElement(By.id("Gender")).isSelected();
+
+submit(): If form has submit button which has type = “submit” instead 
+of type = "button" then submit() method will work. If button is not 
+inside <form> tag then .submit() method will not work.
+
+• Syntax:
+driver.findElement(By.xpath("//input[@name='Company']")).submit();
+
+
+getOptions():This gets the all options belonging to the Select tag. It 
+takes no parameter and returns 
+List<WebElements>.
+
+eg:
+Select Country = new 
+Select(driver.findElement(By.id("drpCoun
+try")));
+List <WebElement> elementCount = 
+Country.getOptions();
+System.out.println(elementCount.size());
+//Add below code to the above code to 
+read all the options from the dropdown 
+box
+for(int i =0; i<Size ; i++)
+{
+String sValue = 
+elementCount.get(i).getText();
+System.out.println(sValue);
+}
+
+
+Handling Popup Dialogs and Alerts:(org.openqa.selenium.Alert package)
+
+Types of Alerts:
+
+1.Windows based alert box 
+2.Web based alert box
+
+and 
+
+1.Simple Alert
+2.Confirmation Alert
+3.Prompt Alerts
+
+eg:Simple Alert
+
+Alert simpleAlert = driver.switchTo().alert();
+String alertText = simpleAlert.getText();
+System.out.println("Alert text is " + alertText);
+simpleAlert.accept();
+
+eg:Confirmation Alert
+
+Alert confirmationAlert = driver.switchTo().alert();
+String alertText = confirmationAlert.getText();
+System.out.println("Alert text is " + alertText);
+confirmationAlert.dismiss()
+
+eg:Prompt Alert
+
+Alert promptAlert = driver.switchTo().alert();
+String alertText = promptAlert .getText();
+System.out.println("Alert text is " + alertText);
+//Send some text to the alert
+promptAlert.sendKeys("Accepting the alert");
+promptAlert .accept();
+
+
+getWindowHandle() and getWindowHandles()
+
+driver.findElement(By.xpath("//img[@alt='SeleniumMasterLogo']")).click
+(); 
+//Storing parent window reference into a String Variable
+String Parent_Window = driver.getWindowHandle(); 
+//Switching from parent window to child window
+for (String Child_Window : driver.getWindowHandles()) 
+{ 
+driver.switchTo().window(Child_Window); 
+//Performing actions on child window 
+driver.findElement(By.id("dropdown_txt")).click(); 
+driver.findElement(By.xpath("//*[@id='anotherItemDiv']")).click(); 
+} 
+//Switching back to Parent Window 
+driver.switchTo().window(Parent_Window); 
+//Performing some actions on Parent Window 
+driver.findElement(By.className("btn_style")).click();
+
+
+
+Types of Synchronization in Selenium WebDriver
+1.Unconditional Synchronization
+• While implementing unconditional synchronization, only timeout value is required 
+to be specified
+• Selenium WebDriver will wait only till the specified timeout elapsed and then 
+resumes the test execution automatically
+▪ Example: Thread.Sleep();
+
+2.Conditional Synchronization
+• By using conditional synchronization we can specify timeout duration along with 
+some desired conditions to check and then throw an error if nothing happens
+▪ Types of Conditional Synchronization
+1• Implicit Wait:
+By configuring implicit wait, here we are telling the WebDriver to poll the DOM for a specified amount of time when trying to find an element.
+Example:
+driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+2• Explicit Wait:
+Explicit Wait tells the WebDriver to Wait until the specified condition is met or maximum time elapses before throwing NoSuchElement (or)ElementNotVisible Exceptions
+Example:
+WebDriverWait wait = new WebDriverWait(driver, 10);
+WebElement element 
+wait.until(ExpectedConditions.elementToBeClickable(By.id("chk1")));
+
+3.Fluent Wait:
+• Each FluentWait instance defines the maximum amount of time to wait for a 
+condition, as well as the frequency with which to check the condition
+Example:
+Wait wait = new FluentWait(driver)
+.withTimeout(30, SECONDS)
+.pollingEvery(5, SECONDS)
+.ignoring(NoSuchElementException.class);
+
+3.Page Load Synchronization
+• Sets the amount of time to wait for a page load to complete before throwing an error
+Example:
+driver.manage().timeouts().pageLoadTimeout(50,TimeUnit.SECONDS);
+
+
+
+
+
+
+How to generate Alert Pop window in selenium?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver
+Js.executeScript("alert('hello world');");
+▪ How to click a button in Selenium WebDriver using JavaScript?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver; 
+js.executeScript("arguments[0].click();", element);
+▪ How to refresh browser window using Javascript ?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver;
+driver.executeScript("history.go(0)");
+How to get inner text of the entire webpage in Selenium?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver; 
+string sText = js.executeScript("return
+document.documentElement.innerText;").toString();
+▪ How to get the Title of our webpage?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver;
+string sText = js.executeScript("return document.title;").toString();
+▪ How to perform Scroll on application using Selenium?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver;
+js.executeScript("window.scrollBy(0,50)");
+Note: for scrolling till the bottom of the page we can use the code
+js.executeScript("window.scrollBy(0,document.body.scrollHeight)");
+
+How to click on a Sub Menu which is only visible on mouse hover on 
+Menu?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver; 
+//Hover on Automation Menu on the Menu Bar
+js.executeScript("$('ul.menus.menu-secondary.sf-js-enabled.sub-menu 
+li').hover()");
+▪ How to navigate to different page using Javascript?
+▪ Example:
+JavascriptExecutor js = (JavascriptExecutor)driver;
+//Navigate to new Page
+js.executeScript("window.location = 
+'https://www.facebook.com/uftHelp'")
+
+
+XUnit:
+XUnit is the collective name for several unit testing frameworks that 
+derive their structure and functionality from Smalltalk's SUnit
+
+JUnit – Annotations
+1.@Test: The Test annotation tells JUnit that the public void method to 
+which it is attached can be run as a test case.
+2.@Before: When writing tests, it is common to find that several tests need 
+similar objects created before they can run.
+3.@After: If you allocate external resources in a Before method you need to release them after the test runs.
+4.@BeforeClass:The only difference is the method annotated with @BeforeClass will be called once per test class based, and the method annotated with @Before will be called once per test based.
+5.The @AfterClass methods declared in superclasses will be run after those of the current class.
+6.@Ignore: Sometimes you want to temporarily disable a test or a 
+group of tests.
+
+
+@BeforeMethod The annotation notifies the system that the method annotated as 
+@BeforeMethod must be executed before executing any and every 
+test method within the same test class
+@AfterMethod The annotation notifies the system that the method annotated as 
+@AfterMethod must be executed after executing any and every test 
+method within the same test class
+@BeforeGroups The annotation notifies the system that the method annotated as 
+@BeforeGroups is a configuration method that enlists a group and 
+that must be executed before executing the first test method of the 
+group
+@AfterGroups The annotation notifies the system that the method annotated as 
+@AfterGroups is a configuration method that enlists a group and 
+that must be executed after executing the last test method of the 
+group
+
+
+POM:
+
+Page Object Model is a design pattern to create object repository for web 
+UI elements.
+Advantages of Page Object Model (POM)
+▪ Increases Code Reusability
+▪ Improves Code Maintainability
+▪ Independent Object Repository
+▪ Readability
+▪ Supports Selenium Framework
+
+
+Use of initElements() : We should initialize page objects using initElements() 
+method from PageFactory Class. once we call initElements() method, all elements 
+will get initialized. PageFactory.initElements() static method takes the driver 
+instance of the given class and the class type, and returns a Page Object with its 
+fields fully initialized.
+There are 3 ways of initializing this:
+Option 1:
+ShopOnlineHomePage page = new ShopOnlineHomePage(driver);
+PageFactory.initElements(driver, page)
+Option 2:
+ShopOnlineHomePage page=PageFactory.intElements(driver,ShopOnlineHomePage.class)
+
+Option 3:
+/*
+*This is done inside the webpage 
+ShopOnlineHomePage class constructor.
+*/
+public ShopOnlineHomePage(WebDriver driver) 
+{
+this.driver = driver;
+PageFactory.initElements(driver, this);
+}
+
+Use Annotations of PageFactory Class
+• In Page Factory, annotations are used to give descriptive names for WebElements 
+to improve code readability
+▪ @FindBy Annotation
+• Example: The below given two annotations are pointing to the same UI Element.
+Example 1:
+@FindBy(id = “username”) 
+WebElement txt_UserName;
+
+Example 2:
+@FindBy(how = How.ID, using = “username”) 
+WebElement txt_UserName;
+
+To work with class name, we will define as below:
+
+▪ When we have multiple elements we can initialize them using 
+PageFactory as below:
+Example 3:
+@FindBy(className=".input.username")
+private WebElement userName;
+Example 4:
+@FindBy(tagName = "mylist") 
+private List<WebElement> links
